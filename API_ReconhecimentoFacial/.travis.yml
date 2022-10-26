@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  docker build -t face_servico .;
+  docker tag face_servico najjannaj/face_recognition:latest;
+  docker push najjannaj/face_recognition:latest;

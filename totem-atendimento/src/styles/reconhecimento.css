@@ -1,0 +1,26 @@
+video {
+    width: 600px;
+}
+
+
+.container-mod {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.capture{
+    position: relative;
+    bottom: 30%;
+}
+
+.button-photo {
+    cursor: pointer;
+    background-color: #4caf50a6; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }

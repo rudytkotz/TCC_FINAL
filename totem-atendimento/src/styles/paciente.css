@@ -1,0 +1,59 @@
+.card {
+    background: #fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 500px;
+  }
+  
+  .card .text{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  .card .text img{
+      height: 170px;
+      border-radius: 50%;
+    margin-bottom:10px;
+  }
+  
+  .card .text h3{
+      font-size: 40px;
+      font-weight: 400;
+  }
+  
+  .card .text p:nth-of-type(1){
+      font-size: 15px;
+      margin-top: 20px;
+  }
+
+
+  .center-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .btn-group{
+    margin-top: 1em;
+  }
+
+  .btn-group .button-photo {
+    cursor: pointer;
+    background-color: #4caf50a6; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline;
+    font-size: 16px;
+  }
+
+  .mr-1 {
+    margin-right: 1em;
+  }
