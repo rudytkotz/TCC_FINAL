@@ -16,7 +16,7 @@ const Paciente = () => {
                         <p><b>Documento:</b> <span>{location.state.document}</span></p>
                     </div>
                     <div className='btn-group'>
-                        <button onClick={() => navigate("/reconhecimento")} className='button-photo mr-1'>Cancelar</button>
+                        <button onClick={() => navigate("/")} className='button-photo mr-1'>Cancelar</button>
                         <button onClick={() => navigate("/tipo-consulta", {state:{cardId:12212312312}})} className='button-photo'>Confirmar</button>
                     </div>
                 </div>

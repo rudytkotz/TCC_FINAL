@@ -15,7 +15,7 @@ const Reconhecimento = () => {
     }, [webcamRef, setImgSrc]);
 
     if(imgSrc){
-        navigate("/paciente", {state:{cardId:12212312312,name:'Abran',document: "CPF 126.121.124-21", photo: imgSrc}})
+        navigate("/paciente", {state:{cardId:12212312312,name:'Rodolfo Varanda',document: "CPF 126.121.124-21", photo: imgSrc}})
     }
 
     return (
