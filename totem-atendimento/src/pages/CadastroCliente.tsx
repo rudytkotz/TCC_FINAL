@@ -35,8 +35,7 @@ const CadastroCliente = () => {
   useEffect(() => {
     const hasToken = localStorage.getItem("@toten_atentimento_token")
     const user = JSON.parse(localStorage.getItem("@toten_atentimento_user")!)
-    console.log(user)
-    console.log(hasToken)
+
     if (!hasToken) {
       navigate("/login")
     } else {
@@ -49,8 +48,21 @@ const CadastroCliente = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const onSubmit = (data: any) => handleLogin(data);
   const handleLogin = (ClientData: ClientData) => {
-    ClientData.base64 = imgSrc
-    axios.post("http://localhost:80/api/pacientes", ClientData, {
+
+    const paciente = {
+      data: {
+        Nome: ClientData.Nome,
+        RG: ClientData.RG,
+        NCarteira: ClientData.NCarteira,
+        Endereco: ClientData.Endereco,
+        NResidencial: ClientData.NResidencial,
+        Complemento: ClientData.Complemento,
+        Telefone: ClientData.Telefone,
+        base64: ClientData.base64,
+        CPF: ClientData.CPF
+      }
+    }
+    axios.post("http://localhost:80/api/pacientes", paciente, {
       headers: {
         'Authorization': `Bearer ${token?.replace('"', '')}` 
       }
