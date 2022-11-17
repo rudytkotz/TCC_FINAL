@@ -12,6 +12,7 @@
   "dependencies": {
     "@artcoded/strapi-plugin-github-projects": "^1.0.5",
     "@strapi/plugin-documentation": "^4.4.3",
+    "@strapi/plugin-graphql": "^4.5.0",
     "@strapi/plugin-i18n": "4.4.3",
     "@strapi/plugin-users-permissions": "4.4.3",
     "@strapi/provider-upload-aws-s3": "^4.4.3",

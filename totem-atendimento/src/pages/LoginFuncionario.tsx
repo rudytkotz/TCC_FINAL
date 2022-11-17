@@ -15,7 +15,7 @@ const LoginFuncionario = () => {
     const onSubmit = (data: any) => handleLogin(data);
 
     const handleLogin = (credential: AuthData) => {
-        axios.post("http://localhost:80/api/auth/local", credential)
+        axios.post("http://localhost:1575/api/auth/local", credential)
         .then((res) => {
             localStorage.setItem('@toten_atentimento_user', JSON.stringify(res.data.user));
             localStorage.setItem('@toten_atentimento_token', JSON.stringify(res.data.jwt));

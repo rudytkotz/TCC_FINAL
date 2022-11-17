@@ -58,11 +58,11 @@
       "target": "api::consulta-agendada.consulta-agendada",
       "mappedBy": "CPF"
     },
-    "consultaFeitas": {
+    "consultasId": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::consulta.consulta",
-      "mappedBy": "CPF"
+      "mappedBy": "paciente"
     }
   }
 }

@@ -19,7 +19,7 @@ type ClientData = {
   NResidencial: number,
   Complemento: string,
   Telefone: string,
-  base64: string | undefined,
+  base64: Text | undefined,
   CPF: string,
 }
 
@@ -35,8 +35,7 @@ const CadastroCliente = () => {
   useEffect(() => {
     const hasToken = localStorage.getItem("@toten_atentimento_token")
     const user = JSON.parse(localStorage.getItem("@toten_atentimento_user")!)
-    console.log(user)
-    console.log(hasToken)
+
     if (!hasToken) {
       navigate("/login")
     } else {
@@ -49,12 +48,21 @@ const CadastroCliente = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const onSubmit = (data: any) => handleLogin(data);
   const handleLogin = (ClientData: ClientData) => {
-    ClientData.base64 = imgSrc
-    axios.post("http://localhost:80/api/pacientes", ClientData, {
-      headers: {
-        'Authorization': `Bearer ${token?.replace('"', '')}` 
+
+    const paciente = {
+      data: {
+        Nome: ClientData.Nome,
+        RG: ClientData.RG,
+        NCarteira: ClientData.NCarteira,
+        Endereco: ClientData.Endereco,
+        NResidencial: ClientData.NResidencial,
+        Complemento: ClientData.Complemento,
+        Telefone: ClientData.Telefone,
+        base64: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAx+GVk6eDwO+vgO++3E3HSQKL5b75bQb54r6ooJL6IBBpR+H6flKAXkSruv1sXdIOWDI5YpMHzxDTjQo44s9I0qLKaIO574q7SJe8ufhEOVZ3M5euS+Y2kn4X2CKoJ71yjBTzigLLqP6t1N76",
+        CPF: ClientData.CPF
       }
-    })
+    }
+    axios.post("http://localhost:1575/api/pacientes", paciente)
     console.log(ClientData)
   }
 

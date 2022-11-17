@@ -4,7 +4,8 @@
   "info": {
     "singularName": "consulta",
     "pluralName": "consultas",
-    "displayName": "Consulta"
+    "displayName": "Consulta",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -23,11 +24,11 @@
     "Andar": {
       "type": "string"
     },
-    "CPF": {
+    "paciente": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::paciente.paciente",
-      "inversedBy": "consultaFeitas"
+      "inversedBy": "consultasId"
     }
   }
 }
