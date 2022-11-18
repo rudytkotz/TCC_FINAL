@@ -169,18 +169,6 @@ def web_faces_base_public():
 
 
 
-#Metodo teste
-@app.route('/base64', methods=['POST'])
-def web_recognize():
-    file = extract_image(request)
-
-    if file and is_picture(file.filename):
-        # The image file seems valid! Detect faces and return the result.
-        return convert_base64(file)
-    else:
-        raise BadRequest("Given file is invalid!")
-
-
 
 @app.route('/', methods=['POST'])
 def web_recognize():
