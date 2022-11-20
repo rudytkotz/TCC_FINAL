@@ -13,8 +13,6 @@ function Dashboard() {
     useEffect(() => {
         const hasToken = localStorage.getItem("@toten_atentimento_token")
         const user = JSON.parse(localStorage.getItem("@toten_atentimento_user")!)
-        console.log(user)
-        console.log(hasToken)
         if (!hasToken) {
             navigate("/login")
         }
