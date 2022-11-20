@@ -115,8 +115,6 @@ def encoding_img(image):
 
 
 
-
-
 @app.route('/base', methods=['POST'])
 def web_recognize_base():
     if 'base64Image' not in request.args:
@@ -172,6 +170,16 @@ def web_faces_base_public():
 
 @app.route('/', methods=['POST'])
 def web_recognize():
+    file = extract_image(request)
+
+    if file and is_picture(file.filename):
+        # The image file seems valid! Detect faces and return the result.
+        return jsonify(detect_faces_in_image(file))
+    else:
+        raise BadRequest("Given file is invalid!")
+
+@app.route('/foto', methods=['POST'])
+def web_recognize_foto():
     file = extract_image(request)
 
     if file and is_picture(file.filename):

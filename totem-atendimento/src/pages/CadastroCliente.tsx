@@ -3,13 +3,13 @@ import { useForm } from "react-hook-form";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import axios from "axios"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import Stack from 'react-bootstrap/Stack';
 import { UserData } from './Dashboard';
 import { Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 
 type ClientData = {
   Nome: string,
@@ -26,12 +26,13 @@ type ClientData = {
 const CadastroCliente = () => {
   const [user, setUser] = useState({} as UserData)
   const [token, setToken] = useState<string>()
+  const [base64, setBase64] = useState<URL | RequestInfo>(new URL('/en-US/docs', "https://developer.mozilla.org/fr-FR/toto"))
   const [show, setShow] = useState(false);
   const webcamRef = React.useRef(null);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
-
+  var fd = new FormData();
   useEffect(() => {
     const hasToken = localStorage.getItem("@toten_atentimento_token")
     const user = JSON.parse(localStorage.getItem("@toten_atentimento_user")!)
@@ -46,24 +47,32 @@ const CadastroCliente = () => {
   }, [])
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = (data: any) => handleLogin(data);
-  const handleLogin = (ClientData: ClientData) => {
-
-    const paciente = {
-      data: {
-        Nome: ClientData.Nome,
-        RG: ClientData.RG,
-        NCarteira: ClientData.NCarteira,
-        Endereco: ClientData.Endereco,
-        NResidencial: ClientData.NResidencial,
-        Complemento: ClientData.Complemento,
-        Telefone: ClientData.Telefone,
-        base64: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAx+GVk6eDwO+vgO++3E3HSQKL5b75bQb54r6ooJL6IBBpR+H6flKAXkSruv1sXdIOWDI5YpMHzxDTjQo44s9I0qLKaIO574q7SJe8ufhEOVZ3M5euS+Y2kn4X2CKoJ71yjBTzigLLqP6t1N76",
-        CPF: ClientData.CPF
-      }
-    }
-    axios.post("http://localhost:1575/api/pacientes", paciente)
-    console.log(ClientData)
+  const onSubmit = (data: any) => handleStoreUser(data);
+  const handleStoreUser = (ClientData: ClientData) => {
+    fetch(base64)
+        .then(res => res.blob())
+        .then(blob => {
+            const file = new File([blob], "rosto.jpeg");
+            fd.append('file', file)
+            const API_URL = `http://localhost:8080/faces?id=${ClientData.CPF}`
+            fetch(API_URL, {method: 'POST', body: fd})
+            .then(() => {
+              const paciente = {
+                data: {
+                  Nome: ClientData.Nome,
+                  RG: ClientData.RG,
+                  NCarteira: ClientData.NCarteira,
+                  Endereco: ClientData.Endereco,
+                  NResidencial: ClientData.NResidencial,
+                  Complemento: ClientData.Complemento,
+                  Telefone: ClientData.Telefone,
+                  base64: base64,
+                  CPF: ClientData.CPF
+                }
+              }
+              axios.post("http://localhost:80/api/pacientes", paciente)
+            })
+        }).then((() => alert("Cadastrado")))
   }
 
   function handleLogout() {
@@ -74,6 +83,7 @@ const CadastroCliente = () => {
   const [imgSrc, setImgSrc] = React.useState<string>();
   const capture = React.useCallback(() => {
     const foto = webcamRef.current.getScreenshot();
+    setBase64(foto)
     setImgSrc(foto);
 }, [webcamRef, setImgSrc]);
 

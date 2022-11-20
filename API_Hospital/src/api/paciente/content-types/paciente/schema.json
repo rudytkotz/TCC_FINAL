@@ -17,10 +17,7 @@
     },
     "RG": {
       "type": "string",
-      "regex": "(^\\d{1,2}).?(\\d{3}).?(\\d{3})-?(\\d{1}|X|x$)",
-      "unique": true,
-      "maxLength": 9,
-      "minLength": 9
+      "unique": true
     },
     "NCarteira": {
       "type": "string"
@@ -51,12 +48,6 @@
       "unique": true,
       "minLength": 11,
       "maxLength": 11
-    },
-    "ConsultaId": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::consulta-agendada.consulta-agendada",
-      "mappedBy": "CPF"
     },
     "consultasId": {
       "type": "relation",

@@ -1,19 +1,39 @@
-import React, {useEffect} from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
+import format from 'date-fns/format';
+import ptBR from 'date-fns/locale/pt-BR';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { parseISO } from 'date-fns';
+import axios from 'axios';
+import { UserContext } from '../contexts/user/UserContext';
 
 const DetalheConsulta = () => {
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-          navigate('/')
-        }, 20000);
-        return () => clearTimeout(timer);
-      }, []);
-
+    const user = useContext(UserContext)
     const navigate = useNavigate()
     const location = useLocation();
+
+    const formattedDate = format(
+        parseISO(location.state.DataConsulta),
+        "'Dia' dd 'de' MMMM', às ' HH:mm'h'"
+        , { locale: ptBR });
+
+        function finalizaConsulta(){
+            const consulta = {
+                data: {
+                    TipoConsulta: location.state.TipoConsulta,
+                    DataConsulta: location.state.DataConsulta,
+                    Setor: location.state.Setor,
+                    Andar: location.state.Andar,
+                    cpf: user.user?.CPF,
+                }
+              }
+
+              axios.post("http://localhost:80/api/consulta-agendadas", consulta).then(() => {
+                navigate('/')
+              })
+        }
+
     return (
         <main>
             <div className='center-card'>
@@ -31,13 +51,13 @@ const DetalheConsulta = () => {
                         <tbody>
                             <tr>
                                 <td>{location.state.TipoConsulta}</td>
-                                <td>{location.state.DataConsulta}</td>
+                                <td>{formattedDate}</td>
                                 <td>{location.state.Setor}</td>
                                 <td>{location.state.Andar}</td>
                             </tr>
                         </tbody>
                     </Table>
-                    <Button onClick={() => navigate('/')} variant="primary">Finalizar Atendimento</Button>
+                    <Button onClick={() => finalizaConsulta()} variant="primary">Finalizar Atendimento</Button>
                 </div>
             </div>
         </main>

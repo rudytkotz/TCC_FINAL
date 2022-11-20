@@ -27,11 +27,8 @@
     "Andar": {
       "type": "string"
     },
-    "CPF": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::paciente.paciente",
-      "inversedBy": "ConsultaId"
+    "cpf": {
+      "type": "string"
     }
   }
 }

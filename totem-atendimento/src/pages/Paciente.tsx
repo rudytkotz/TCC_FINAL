@@ -1,19 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { UserContext } from '../contexts/user/UserContext';
 import "../styles/paciente.css"
 
 const Paciente = () => {
     const navigate = useNavigate()
     const location = useLocation();
+    const user = useContext(UserContext)
     return (
         <main>
             <div className='center-card'>
                 <div className="card">
                     <div className="text">
-                        <img src={location.state.photo} alt="" />
-                        <h3>{location.state.name}</h3>
-                        <p><b>Nº Carteira:</b> <span>{location.state.cardId}</span></p>
-                        <p><b>Documento:</b> <span>{location.state.document}</span></p>
+                        <img src={user.photo} alt="" />
+                        <h3>{user.user?.Nome}</h3>
+                        <p><b>Nº Carteira:</b> <span>{user.user?.NCarteira}</span></p>
+                        <p><b>Documento:</b> <span>{user.user?.CPF}</span></p>
                     </div>
                     <div className='btn-group'>
                         <button onClick={() => navigate("/")} className='button-photo mr-1'>Cancelar</button>
