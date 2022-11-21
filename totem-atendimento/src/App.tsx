@@ -1,5 +1,5 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import { UserProvider } from './contexts/user/Userprovider'
+import { UserProvider } from './contexts/user/UserProvider'
 import CadastroCliente from './pages/CadastroCliente'
 import ConsultaAgendada from './pages/ConsultaAgendada'
 import Dashboard from './pages/Dashboard'
@@ -15,7 +15,6 @@ import TipoConsulta from './pages/TipoConsulta'
 
 export function App() {
   return (
-    <UserProvider>
       <Routes>
         <Route path="/"  element={<Login />} />
         <Route path="/recepcao"  element={<Recepcao />} />
@@ -30,14 +29,14 @@ export function App() {
         <Route path="/cliente/cadastrar" element={<CadastroCliente />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </UserProvider>
   )
 }
 
 export function WrappedApp() {
   return (
     <HashRouter>
-      <App />
+      <UserProvider><App /></UserProvider>
+      
     </HashRouter>
   )
 }

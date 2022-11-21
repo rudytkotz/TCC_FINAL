@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Webcam from "react-webcam";
 import { UserContext } from '../contexts/user/UserContext';
@@ -15,11 +15,21 @@ const Reconhecimento = () => {
     const user = useContext(UserContext)
     const navigate = useNavigate();
     const webcamRef = React.useRef(null);
-    const [imgSrc, setImgSrc] = React.useState(null);
-    const capture = React.useCallback(() => {
-        const imageSrc = webcamRef.current.getScreenshot();
+    const [imgSrc, setImgSrc] = useState<string | null>(null);
+    const [imagemUrl, setImagemUrl] = useState<RequestInfo | URL>("")
 
-        fetch(imageSrc)
+    useEffect(() => {
+    console.log("Mudou o Base64")
+    console.log(imgSrc)
+    if(imgSrc){
+      setImagemUrl(imgSrc)
+    }
+  }, [imgSrc])
+    const capture = React.useCallback(() => {
+        const webcam: Webcam = webcamRef.current!
+        const imageSrc = webcam.getScreenshot();
+
+        fetch(imagemUrl)
             .then(res => res.blob())
             .then(blob => {
                 const fd = new FormData();

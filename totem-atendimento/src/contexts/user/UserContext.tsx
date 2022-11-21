@@ -6,7 +6,7 @@ export type UserContextType = {
     userId: number | null;
     photo: string;
     setUserInContext: (user: UserDataType) => void;
-    setPhotoInContext: (base64: string) => void;
+    setPhotoInContext: (base64: string | null) => void;
     setUserIdInContext: (id: number) => void;
 }
 

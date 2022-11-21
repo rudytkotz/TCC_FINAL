@@ -26,7 +26,9 @@ type ClientData = {
 const CadastroCliente = () => {
   const [user, setUser] = useState({} as UserData)
   const [token, setToken] = useState<string>()
-  const [base64, setBase64] = useState<URL | RequestInfo>(new URL('/en-US/docs', "https://developer.mozilla.org/fr-FR/toto"))
+  const [imgSrc, setImgSrc] = useState<string | null>(null)
+  const [base64, setBase64] = useState<string | null>(null)
+  const [imagemUrl, setImagemUrl] = useState<RequestInfo | URL>("")
   const [show, setShow] = useState(false);
   const webcamRef = React.useRef(null);
   const handleClose = () => setShow(false);
@@ -46,33 +48,41 @@ const CadastroCliente = () => {
     setUser(user)
   }, [])
 
+  useEffect(() => {
+    console.log("Mudou o Base64")
+    console.log(base64)
+    if(base64){
+      setImagemUrl(base64)
+    }
+  }, [base64])
+
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const onSubmit = (data: any) => handleStoreUser(data);
   const handleStoreUser = (ClientData: ClientData) => {
-    fetch(base64)
-        .then(res => res.blob())
-        .then(blob => {
-            const file = new File([blob], "rosto.jpeg");
-            fd.append('file', file)
-            const API_URL = `${import.meta.env.VITE_FACIAL_API_URL}/faces?id=${ClientData.CPF}`
-            fetch(API_URL, {method: 'POST', body: fd})
-            .then(() => {
-              const paciente = {
-                data: {
-                  Nome: ClientData.Nome,
-                  RG: ClientData.RG,
-                  NCarteira: ClientData.NCarteira,
-                  Endereco: ClientData.Endereco,
-                  NResidencial: ClientData.NResidencial,
-                  Complemento: ClientData.Complemento,
-                  Telefone: ClientData.Telefone,
-                  base64: base64,
-                  CPF: ClientData.CPF
-                }
+    fetch(imagemUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], "rosto.jpeg");
+        fd.append('file', file)
+        const API_URL = `${import.meta.env.VITE_FACIAL_API_URL}/faces?id=${ClientData.CPF}`
+        fetch(API_URL, { method: 'POST', body: fd })
+          .then(() => {
+            const paciente = {
+              data: {
+                Nome: ClientData.Nome,
+                RG: ClientData.RG,
+                NCarteira: ClientData.NCarteira,
+                Endereco: ClientData.Endereco,
+                NResidencial: ClientData.NResidencial,
+                Complemento: ClientData.Complemento,
+                Telefone: ClientData.Telefone,
+                base64: base64,
+                CPF: ClientData.CPF
               }
-              axios.post(`${import.meta.env.VITE_API_URL}/api/pacientes`, paciente)
-            })
-        }).then((() => alert("Cadastrado")))
+            }
+            axios.post(`${import.meta.env.VITE_API_URL}/api/pacientes`, paciente)
+          })
+      }).then((() => alert("Cadastrado")))
   }
 
   function handleLogout() {
@@ -80,12 +90,13 @@ const CadastroCliente = () => {
     localStorage.removeItem("@toten_atentimento_user")
     navigate("/login")
   }
-  const [imgSrc, setImgSrc] = React.useState<string>();
+
   const capture = React.useCallback(() => {
-    const foto = webcamRef.current.getScreenshot();
+    const webcam: Webcam = webcamRef.current!
+    const foto = webcam.getScreenshot();
     setBase64(foto)
     setImgSrc(foto);
-}, [webcamRef, setImgSrc]);
+  }, [webcamRef, setImgSrc]);
 
   return (<>
     <div className="container">
@@ -104,7 +115,7 @@ const CadastroCliente = () => {
       </header>
       <Form onSubmit={handleSubmit(onSubmit)} >
         <Row>
-        <button className='button-photo mb-3' onClick={handleShow} >Tirar Foto</button>
+          <button className='button-photo mb-3' onClick={handleShow} >Tirar Foto</button>
         </Row>
         <Row>
           <Col lg={6} md={6} sm={12} xs={12}>
@@ -174,30 +185,30 @@ const CadastroCliente = () => {
       </div>
     </footer>
     <Modal show={show} className="modal-lg" onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Capture a foto do cliente</Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{textAlign: 'center'}}>
+      <Modal.Header closeButton>
+        <Modal.Title>Capture a foto do cliente</Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ textAlign: 'center' }}>
         {!imgSrc ? <Webcam audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-        />: <img src={imgSrc} alt="" />}
-        </Modal.Body>
-        <Modal.Footer>
-          {!imgSrc ? <><Button variant="danger" onClick={handleClose}>
-            Cancelar
-          </Button>
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+        /> : <img src={imgSrc} alt="" />}
+      </Modal.Body>
+      <Modal.Footer>
+        {!imgSrc ? <><Button variant="danger" onClick={handleClose}>
+          Cancelar
+        </Button>
           <Button variant="success" onClick={capture}>
             Capturar Foto
-          </Button> </>: <><Button variant="danger" onClick={() => setImgSrc("")}>
+          </Button> </> : <><Button variant="danger" onClick={() => setImgSrc("")}>
             Capturar Novamente
           </Button>
           <Button variant="success" onClick={handleClose}>
             Salvar Foto
           </Button> </>}
-          
-        </Modal.Footer>
-      </Modal>
+
+      </Modal.Footer>
+    </Modal>
   </>
   )
 }

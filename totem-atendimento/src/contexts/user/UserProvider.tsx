@@ -5,13 +5,13 @@ import { UserContext } from "./UserContext"
 export const UserProvider = ({children}: {children: JSX.Element}) => {
     const [user, setUser] = useState<UserDataType | null>(null)
     const [userId, setUserId] = useState<number | null>(null)
-    const [photo, setPhoto] = useState<string>("")
+    const [photo, setPhoto] = useState<any>("")
 
     const setUserInContext = (user: UserDataType) => {
         setUser(user)
     }
 
-    const setPhotoInContext = (base64: string) => {
+    const setPhotoInContext = (base64: any) => {
         setPhoto(base64)
     }
 
