@@ -25,12 +25,11 @@ const Reconhecimento = () => {
                 const fd = new FormData();
                 const file = new File([blob], "foto.jpeg");
                 fd.append('file', file)
-                const API_URL = 'http://localhost:8080/'
-                fetch(API_URL, { method: 'POST', body: fd })
+                fetch(import.meta.env.VITE_FACIAL_API_URL, { method: 'POST', body: fd })
                     .then(res => res.json())
                     .then(res => {
                         const cpf = res.faces[0].id
-                        fetch(`http://localhost/api/pacientes?filters[$and][0][CPF][$eq]=${cpf}`)
+                        fetch(`${import.meta.env.VITE_API_URL}/api/pacientes?filters[$and][0][CPF][$eq]=${cpf}`)
                             .then((response) => response.json())
                             .then(({data}) => {
                                 if(data.length === 0){

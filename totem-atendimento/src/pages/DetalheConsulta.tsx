@@ -29,7 +29,7 @@ const DetalheConsulta = () => {
                 }
               }
 
-              axios.post("http://localhost:80/api/consulta-agendadas", consulta).then(() => {
+              axios.post(`${import.meta.env.VITE_API_URL}/api/consulta-agendadas`, consulta).then(() => {
                 navigate('/')
               })
         }

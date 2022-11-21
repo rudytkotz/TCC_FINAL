@@ -54,7 +54,7 @@ const CadastroCliente = () => {
         .then(blob => {
             const file = new File([blob], "rosto.jpeg");
             fd.append('file', file)
-            const API_URL = `http://localhost:8080/faces?id=${ClientData.CPF}`
+            const API_URL = `${import.meta.env.VITE_FACIAL_API_URL}/faces?id=${ClientData.CPF}`
             fetch(API_URL, {method: 'POST', body: fd})
             .then(() => {
               const paciente = {
@@ -70,7 +70,7 @@ const CadastroCliente = () => {
                   CPF: ClientData.CPF
                 }
               }
-              axios.post("http://localhost:80/api/pacientes", paciente)
+              axios.post(`${import.meta.env.VITE_API_URL}/api/pacientes`, paciente)
             })
         }).then((() => alert("Cadastrado")))
   }

@@ -25,12 +25,12 @@ const ConsultaAgendada = () => {
 
     useEffect(() => {
         const getConsultas = async () => {
-            const users = await axios.get("http://localhost/api/consultas?populate=paciente");
+            const users = await axios.get(`${import.meta.env.VITE_API_URL}/api/consultas?populate=paciente`);
             const listaFiltrada = listarConsultas(users.data.data)
             setConsultas(listaFiltrada);
         };
 
-        getConsultas(); // run it, run it
+        getConsultas();
     }, []);
 
     function listarConsultas(consultas: queryList[]){
@@ -40,9 +40,9 @@ const ConsultaAgendada = () => {
 
         const validUserQueue = filtered.filter(c => {
             const date = new Date(c.attributes.DataConsulta)
-            return differenceInDays(date, new Date()) <= 3 ? c : null
+            const contagemDias = differenceInDays(date, new Date())
+            return contagemDias <= 3 ? c : null
         })
-    
         return validUserQueue
     }
 
