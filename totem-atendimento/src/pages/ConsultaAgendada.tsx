@@ -21,13 +21,16 @@ export type queryList = {
 
 const ConsultaAgendada = () => {
     const [consultas, setConsultas] = useState<queryList[]>([])
+    const [isLoaded, setIsLoaded] = useState<boolean>(false)
     const user = useContext(UserContext)
 
     useEffect(() => {
         const getConsultas = async () => {
+            
             const users = await axios.get(`${import.meta.env.VITE_API_URL}/api/consultas?populate=paciente`);
             const listaFiltrada = listarConsultas(users.data.data)
             setConsultas(listaFiltrada);
+            setIsLoaded(true)
         };
 
         getConsultas();
@@ -47,15 +50,29 @@ const ConsultaAgendada = () => {
     }
 
     const navigate = useNavigate()
+    if(!isLoaded) {
+        return (
+            <main>
+                <div className='center-card'>
+                    <div className="card">
+                    <button key="recepcao" onClick={() => {}} className="block">Carregando consultas</button>
+                    </div>
+                </div>
+            </main>
+        )
+    }
+
     return (
         <main>
             <div className='center-card'>
                 <div className="card">
-                    <div className="buttons-container-mod">
-                        {consultas.map((consulta: queryList) => {
+                    { isLoaded &&
+                        <div className="buttons-container-mod">
+                        {consultas.length === 0 ? <button key="recepcao" onClick={() => navigate('/recepcao')} className="block">Sem consultas disponiveis</button> : consultas.map((consulta: queryList) => {
                             return <button key={consulta.id} onClick={() => navigate('/detalhe-consulta', { state: { TipoConsulta: consulta.attributes.TipoConsulta, DataConsulta: consulta.attributes.DataConsulta, Setor: consulta.attributes.Setor, Andar: consulta.attributes.Andar } })} className="block">Consulta com {consulta.attributes.TipoConsulta}</button>
                         })}
                     </div>
+                    }
                 </div>
             </div>
         </main>

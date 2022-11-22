@@ -15,47 +15,49 @@ const Reconhecimento = () => {
     const user = useContext(UserContext)
     const navigate = useNavigate();
     const webcamRef = React.useRef(null);
-    const [imgSrc, setImgSrc] = useState<string | null>(null);
-    const [imagemUrl, setImagemUrl] = useState<RequestInfo | URL>("")
+    const [imgSrc, setImgSrc] = useState<string>("");
 
-    useEffect(() => {
-    console.log("Mudou o Base64")
-    console.log(imgSrc)
-    if(imgSrc){
-      setImagemUrl(imgSrc)
+    const getFileFromBase64 = (string64: string, fileName: string) => {
+        const trimmedString = string64.replace('data:image/jpeg;base64,', '');
+        const imageContent = atob(trimmedString);
+        const buffer = new ArrayBuffer(imageContent.length);
+        const view = new Uint8Array(buffer);
+
+        for (let n = 0; n < imageContent.length; n++) {
+            view[n] = imageContent.charCodeAt(n);
+        }
+        const type = 'image/jpg';
+        const blob = new Blob([buffer], { type });
+        return new File([blob], fileName, { lastModified: new Date().getTime(), type });
     }
-  }, [imgSrc])
-    const capture = React.useCallback(() => {
+
+    const capture = React.useCallback(async () => {
         const webcam: Webcam = webcamRef.current!
-        const imageSrc = webcam.getScreenshot();
-
-        fetch(imagemUrl)
-            .then(res => res.blob())
-            .then(blob => {
-                const fd = new FormData();
-                const file = new File([blob], "foto.jpeg");
-                fd.append('file', file)
-                fetch(import.meta.env.VITE_FACIAL_API_URL, { method: 'POST', body: fd })
-                    .then(res => res.json())
-                    .then(res => {
-                        const cpf = res.faces[0].id
-                        fetch(`${import.meta.env.VITE_API_URL}/api/pacientes?filters[$and][0][CPF][$eq]=${cpf}`)
-                            .then((response) => response.json())
-                            .then(({data}) => {
-                                if(data.length === 0){
-                                    return navigate("/recepcao")
-                                } else {
-                                    user.setUserInContext(data[0].attributes)
-                                    user.setPhotoInContext(imageSrc)
-                                    user.setUserIdInContext(data[0].id)
-                                    setImgSrc(imageSrc)
-                                    return navigate("/paciente")
-                                }
-                            }).catch((e) => navigate("/recepcao"))
-                    })
+        const base64 = webcam.getScreenshot() ?? ""
+        setImgSrc(base64)
+        try {
+            const fd = new FormData();
+            const arquivo = getFileFromBase64(base64, 'perfil.jpg')
+            fd.append('file', arquivo)
+            fetch(`${import.meta.env.VITE_FACIAL_API_URL}`, { method: 'POST', body: fd }).then(res => res.json()).then(res => {
+                const cpf = res.faces[0].id
+                fetch(`${import.meta.env.VITE_API_URL}/api/pacientes?filters[$and][0][CPF][$eq]=${cpf}`)
+                    .then((response) => response.json())
+                    .then(({data}) => {
+                        if(data.length === 0){
+                            return navigate("/recepcao")
+                        } else {
+                            user.setUserInContext(data[0].attributes)
+                            user.setPhotoInContext(base64)
+                            user.setUserIdInContext(data[0].id)
+                            return navigate("/paciente")
+                        }
+                    }).catch((e) => navigate("/recepcao"))
             })
-
-    }, [webcamRef, setImgSrc]);
+        } catch (error) {
+            alert("Erro ao capturar a foto!")
+        }
+    }, [])
 
 
     return (
@@ -66,6 +68,7 @@ const Reconhecimento = () => {
                         audio={false}
                         ref={webcamRef}
                         screenshotFormat="image/jpeg"
+                        screenshotQuality={1}
                     />
                 </div>
                 <div className="capture">
