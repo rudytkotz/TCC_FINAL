@@ -5,7 +5,6 @@ import "../styles/paciente.css"
 
 const Paciente = () => {
     const navigate = useNavigate()
-    const location = useLocation();
     const user = useContext(UserContext)
     return (
         <main>
