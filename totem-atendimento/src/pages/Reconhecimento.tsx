@@ -13,6 +13,7 @@ export type UserDataType = {
 
 const Reconhecimento = () => {
     const user = useContext(UserContext)
+    const [isFetching, setIsFetching] = useState(false)
     const navigate = useNavigate();
     const webcamRef = React.useRef(null);
     const [imgSrc, setImgSrc] = useState<string>("");
@@ -36,14 +37,19 @@ const Reconhecimento = () => {
         const base64 = webcam.getScreenshot() ?? ""
         setImgSrc(base64)
         try {
+            setIsFetching(true)
             const fd = new FormData();
             const arquivo = getFileFromBase64(base64, 'perfil.jpg')
             fd.append('file', arquivo)
             fetch(`${import.meta.env.VITE_FACIAL_API_URL}`, { method: 'POST', body: fd }).then(res => res.json()).then(res => {
+                if(res?.faces.length === 0){
+                    return navigate("/recepcao")
+                }
                 const cpf = res.faces[0].id
                 fetch(`${import.meta.env.VITE_API_URL}/api/pacientes?filters[$and][0][CPF][$eq]=${cpf}`)
                     .then((response) => response.json())
                     .then(({data}) => {
+                        
                         if(data.length === 0){
                             return navigate("/recepcao")
                         } else {
@@ -72,7 +78,7 @@ const Reconhecimento = () => {
                     />
                 </div>
                 <div className="capture">
-                    <button className='button-photo' onClick={capture}>Tirar Foto</button>
+                    <button className='button-photo' onClick={capture}>{isFetching ? "Buscando Foto" : "Tirar Foto"}</button>
                 </div>
             </div>
         </main>
